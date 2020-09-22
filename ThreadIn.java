@@ -9,12 +9,16 @@ public class ThreadIn implements Runnable{
 
     @Override
     public void run() {
-        try {
-            while (true) {
+
+        while (true) {
+
+            try {
                 mainFrame.addInputText(sendProtocol.getMessage());
+            } catch (Exception ex) {
+                break;
             }
-        } catch (Exception ex){
-            //ex.printStackTrace();
+
         }
+
     }
 }
