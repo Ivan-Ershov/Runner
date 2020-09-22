@@ -5,8 +5,8 @@ import java.awt.event.ActionListener;
 import java.io.*;
 
 public class MainFrame extends JFrame {
-    private volatile JTextArea InputText = new JTextArea(10, 100);
-    private JTextField OutputText = new JTextField("Вводите своё сообщение.", 100);
+    private volatile JTextArea inputText = new JTextArea(10, 100);
+
     private SendProtocol sendProtocol;
     private JFileChooser chooser = new JFileChooser();
 
@@ -14,28 +14,45 @@ public class MainFrame extends JFrame {
         chooser.setCurrentDirectory(new File("C:\\"));
     }
 
-    public MainFrame(SendProtocol sendProtocol) {
-        this.sendProtocol = sendProtocol;
+    public void show_ConnectPanel () {
+        removeAll();
 
+        var panel = new JPanel();
+        var button = new JButton("Ввести");
+        var outputText = new JTextField(100);
+        var textAction = new MainFrame.TextAction(outputText);
+
+        panel.add(new JLabel("User name"));
+        panel.add(outputText);
+        panel.add(button);
+
+        button.addActionListener(textAction);
+
+        add(panel);
+        pack();
+
+    }
+
+    public void show_MainPanel () {
         JPanel panel = new JPanel();
 
         var button_send = new JButton("Отправить");
         var button_send_file = new JButton("Отправить файл");
         var sendAction = new SendAction();
         var fileSendAction = new FileSendAction();
-        var scrollPane = new JScrollPane(InputText);
+        var scrollPane = new JScrollPane(inputText);
 
         panel.add(button_send);
-        add(scrollPane, BorderLayout.CENTER);
-        panel.add(OutputText);
+        panel.add(outputText);
         panel.add(button_send_file);
 
         button_send.addActionListener(sendAction);
         button_send_file.addActionListener(fileSendAction);
-        InputText.setEnabled(false);
-        InputText.setFont(new Font(Font.SERIF, Font.BOLD, 15));
-        InputText.setForeground(Color.BLACK);
+        inputText.setEnabled(false);
+        inputText.setFont(new Font(Font.SERIF, Font.BOLD, 15));
+        inputText.setForeground(Color.BLACK);
 
+        add(scrollPane, BorderLayout.CENTER);
         add(panel, BorderLayout.SOUTH);
         pack();
 
@@ -43,8 +60,30 @@ public class MainFrame extends JFrame {
 
     public synchronized void addInputText(String text) {
 
-        InputText.append('\n' + text);
+        inputText.append('\n' + text);
 
+    }
+
+    private class TextAction implements ActionListener
+    {
+
+        private String name;
+        private JTextField outputText;
+
+        public TextAction(JTextField outputText) {
+            this.outputText = outputText;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+
+            name = outputText.getText();
+
+        }
     }
 
     private class FileSendAction implements ActionListener
@@ -80,9 +119,9 @@ public class MainFrame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
 
-            addInputText("Вы: " + OutputText.getText());
-            sendProtocol.sendMessage(OutputText.getText());
-            OutputText.setText("");
+            addInputText("Вы: " + outputText.getText());
+            sendProtocol.sendMessage(outputText.getText());
+            outputText.setText("");
 
         }
     }
