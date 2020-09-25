@@ -8,7 +8,12 @@ public class MainFrame extends JFrame {
     private volatile JTextArea inputText = new JTextArea(10, 100);
 
     private SendProtocol sendProtocol;
+    private ActionProtocol actionProtocol;
     private JFileChooser chooser = new JFileChooser();
+
+    public MainFrame (ActionProtocol actionProtocol) {
+        this.actionProtocol = actionProtocol;
+    }
 
     {
         chooser.setCurrentDirectory(new File("C:\\"));
@@ -20,13 +25,13 @@ public class MainFrame extends JFrame {
         var panel = new JPanel();
         var button = new JButton("Ввести");
         var outputText = new JTextField(100);
-        var textAction = new MainFrame.TextAction(outputText);
+        var registrationAction = new RegistrationAction(outputText);
 
-        panel.add(new JLabel("User name"));
+        panel.add(new JLabel("User name:"));
         panel.add(outputText);
         panel.add(button);
 
-        button.addActionListener(textAction);
+        button.addActionListener(registrationAction);
 
         add(panel);
         pack();
@@ -34,15 +39,18 @@ public class MainFrame extends JFrame {
     }
 
     public void show_MainPanel () {
-        JPanel panel = new JPanel();
+        removeAll();
 
-        var button_send = new JButton("Отправить");
-        var button_send_file = new JButton("Отправить файл");
-        var sendAction = new SendAction();
+        var panel = new JPanel();
+        var outputText = new JTextField(100);
+        var button_send = new JButton("Send text");
+        var button_send_file = new JButton("Send file");
+        var sendAction = new SendAction(outputText);
         var fileSendAction = new FileSendAction();
         var scrollPane = new JScrollPane(inputText);
 
         panel.add(button_send);
+        panel.add(new JLabel("Text to send:"));
         panel.add(outputText);
         panel.add(button_send_file);
 
@@ -64,24 +72,18 @@ public class MainFrame extends JFrame {
 
     }
 
-    private class TextAction implements ActionListener
+    private class RegistrationAction implements ActionListener
     {
-
-        private String name;
         private JTextField outputText;
 
-        public TextAction(JTextField outputText) {
+        public RegistrationAction (JTextField outputText) {
             this.outputText = outputText;
-        }
-
-        public String getName() {
-            return name;
         }
 
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
 
-            name = outputText.getText();
+            actionProtocol.registration(outputText.getText());
 
         }
     }
@@ -113,7 +115,10 @@ public class MainFrame extends JFrame {
     private class SendAction implements ActionListener
     {
 
-        public SendAction() {
+        private JTextField outputText;
+
+        public SendAction(JTextField outputText) {
+            this.outputText = outputText;
         }
 
         @Override

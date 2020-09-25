@@ -7,7 +7,8 @@ import java.util.Scanner;
 
 public class Runner {
     public final static Scanner inCommand = new Scanner(new InputStreamReader(System.in));
-    public static MainFrame mainFrame = new MainFrame();
+    private static ActionProtocol actionProtocol = new ActionProtocol();
+    public static MainFrame mainFrame = new MainFrame(actionProtocol);
     public static SendProtocol sendProtocol;
 
     public static void main(String[] args) {
