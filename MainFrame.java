@@ -10,6 +10,8 @@ public class MainFrame extends JFrame {
     private MainFrame mainFrame = this;
     private ActionProtocol actionProtocol;
     private JFileChooser chooser = new JFileChooser();
+    private JPanel panel = new JPanel();
+    private JPanel buttonPanel = new JPanel();
 
     public MainFrame (ActionProtocol actionProtocol) {
         this.actionProtocol = actionProtocol;
@@ -22,8 +24,6 @@ public class MainFrame extends JFrame {
     public void show_ConnectPanel () {
         //removeAll();
 
-        var panel = new JPanel();
-        var buttonPanel = new JPanel();
         var buttonServer = new JButton("Server");
         var buttonClient = new JButton("Client");
         var outputText = new JTextField(100);
@@ -45,7 +45,6 @@ public class MainFrame extends JFrame {
     }
 
     public void show_MainPanel () {
-        removeAll();
 
         var panel = new JPanel();
         var outputText = new JTextField(100);
