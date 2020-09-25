@@ -6,7 +6,6 @@ import java.io.*;
 
 public class MainFrame extends JFrame {
     private volatile JTextArea inputText = new JTextArea(10, 100);
-
     private SendProtocol sendProtocol;
     private ActionProtocol actionProtocol;
     private JFileChooser chooser = new JFileChooser();
@@ -20,20 +19,26 @@ public class MainFrame extends JFrame {
     }
 
     public void show_ConnectPanel () {
-        removeAll();
+        //removeAll();
 
         var panel = new JPanel();
-        var button = new JButton("Ввести");
+        var buttonPanel = new JPanel();
+        var buttonServer = new JButton("Server");
+        var buttonClient = new JButton("Client");
         var outputText = new JTextField(100);
-        var registrationAction = new RegistrationAction(outputText);
+        var serverAction = new serverAction(outputText);
+        var clientAction = new clientAction(outputText);
 
         panel.add(new JLabel("User name:"));
         panel.add(outputText);
-        panel.add(button);
+        buttonPanel.add(buttonServer);
+        buttonPanel.add(buttonClient);
 
-        button.addActionListener(registrationAction);
+        buttonServer.addActionListener(serverAction);
+        buttonClient.addActionListener(clientAction);
 
         add(panel);
+        add(buttonPanel, BorderLayout.SOUTH);
         pack();
 
     }
@@ -72,18 +77,38 @@ public class MainFrame extends JFrame {
 
     }
 
-    private class RegistrationAction implements ActionListener
+    private class serverAction implements ActionListener
     {
         private JTextField outputText;
 
-        public RegistrationAction (JTextField outputText) {
+        public serverAction (JTextField outputText) {
             this.outputText = outputText;
         }
 
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
 
-            actionProtocol.registration(outputText.getText());
+            try {
+                sendProtocol = actionProtocol.serverConnect(outputText.getText(), MainFrame.this);
+            } catch (Exception e) {
+                //e.printStackTrace();
+            }
+
+        }
+    }
+
+    private class clientAction implements ActionListener
+    {
+        private JTextField outputText;
+
+        public clientAction (JTextField outputText) {
+            this.outputText = outputText;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+
+            sendProtocol = actionProtocol.clientConnect(outputText.getText(), MainFrame.this);
 
         }
     }

@@ -1,12 +1,32 @@
+import java.net.ServerSocket;
+import java.net.Socket;
+
 public class ActionProtocol {
-    private String name;
+    private static final int port = 48700;
+    private SendProtocol sendProtocol;
 
-    public void registration (String name) {
+    public SendProtocol serverConnect (String name, MainFrame mainFrame) throws Exception {
 
-        this.name = name;
+        try (ServerSocket serverSocket = new ServerSocket(port); Socket incoming = serverSocket.accept()) {
+
+            sendProtocol = new SendProtocol(incoming.getInputStream(), incoming.getOutputStream(), name);
+
+            var threadIn = new Thread(new ThreadIn(sendProtocol, mainFrame));
+
+            mainFrame.show_MainPanel();
+
+            threadIn.start();
+
+        }
+
+        return sendProtocol;
 
     }
 
+    public SendProtocol clientConnect (String name, MainFrame mainFrame) {
 
+        return sendProtocol;
+
+    }
 
 }
