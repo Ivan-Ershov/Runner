@@ -7,6 +7,7 @@ import java.io.*;
 public class MainFrame extends JFrame {
     private volatile JTextArea inputText = new JTextArea(10, 100);
     private SendProtocol sendProtocol;
+    private MainFrame mainFrame = this;
     private ActionProtocol actionProtocol;
     private JFileChooser chooser = new JFileChooser();
 
@@ -89,7 +90,7 @@ public class MainFrame extends JFrame {
         public void actionPerformed(ActionEvent actionEvent) {
 
             try {
-                sendProtocol = actionProtocol.serverConnect(outputText.getText(), MainFrame.this);
+                sendProtocol = actionProtocol.serverConnect(outputText.getText(), mainFrame);
             } catch (Exception e) {
                 //e.printStackTrace();
             }
@@ -108,7 +109,11 @@ public class MainFrame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
 
-            sendProtocol = actionProtocol.clientConnect(outputText.getText(), MainFrame.this);
+            try {
+                sendProtocol = actionProtocol.clientConnect(outputText.getText(), mainFrame);
+            } catch (Exception e) {
+                //e.printStackTrace();
+            }
 
         }
     }
