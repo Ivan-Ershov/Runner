@@ -2,7 +2,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ActionProtocol {
-    private static final int port = 1000;
+    private static final int port = 48700;
     private static final String host = "127.0.0.0";
     private SendProtocol sendProtocol;
 
@@ -32,6 +32,8 @@ public class ActionProtocol {
             sendProtocol = new SendProtocol(connect.getInputStream(), connect.getOutputStream(), name);
 
             var threadIn = new Thread(new ThreadIn(sendProtocol, mainFrame));
+
+            mainFrame.show_MainPanel();
 
             threadIn.start();
 

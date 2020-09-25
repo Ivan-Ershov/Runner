@@ -45,6 +45,7 @@ public class MainFrame extends JFrame {
     }
 
     public void show_MainPanel () {
+        removeAll();
 
         var panel = new JPanel();
         var outputText = new JTextField(100);
