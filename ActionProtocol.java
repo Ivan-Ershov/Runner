@@ -8,9 +8,6 @@ public class ActionProtocol {
 
     public SendProtocol serverConnect (String name, MainFrame mainFrame) throws Exception {
 
-        mainFrame.removeAll();
-        mainFrame.show_MainPanel();
-
         try (ServerSocket serverSocket = new ServerSocket(port); Socket incoming = serverSocket.accept()) {
 
             sendProtocol = new SendProtocol(incoming.getInputStream(), incoming.getOutputStream(), name);
@@ -19,6 +16,8 @@ public class ActionProtocol {
 
             threadIn.start();
 
+        } catch (Exception ex) {
+            //nmhllh;
         }
 
         return sendProtocol;

@@ -11,7 +11,7 @@ public class Runner {
         {
 
             mainFrame.setTitle("Runner");
-            mainFrame.show_ConnectPanel();
+            mainFrame.show_MainPanel();
             Toolkit toolkit = Toolkit.getDefaultToolkit();
             Dimension screenSize = toolkit.getScreenSize();
             mainFrame.setLocation(screenSize.width/2 - mainFrame.getWidth()/2, screenSize.height/2 - mainFrame.getHeight()/2);

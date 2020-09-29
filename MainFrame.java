@@ -7,45 +7,26 @@ import java.io.*;
 public class MainFrame extends JFrame {
     private volatile JTextArea inputText = new JTextArea(10, 100);
     private SendProtocol sendProtocol;
-    private MainFrame mainFrame = this;
     private ActionProtocol actionProtocol;
     private JFileChooser chooser = new JFileChooser();
     private JPanel panel = new JPanel();
     private JPanel buttonPanel = new JPanel();
+    private JDialog loginDialog = new LoginDialog();
+    //private JDialog errorDialog = new ErrorDialog();
+    private Exception ex;
 
     public MainFrame (ActionProtocol actionProtocol) {
         this.actionProtocol = actionProtocol;
     }
 
     {
+
+        loginDialog.setVisible(false);
         chooser.setCurrentDirectory(new File("C:\\"));
-    }
-
-    public void show_ConnectPanel () {
-        //removeAll();
-
-        var buttonServer = new JButton("Server");
-        var buttonClient = new JButton("Client");
-        var outputText = new JTextField(100);
-        var serverAction = new serverAction(outputText);
-        var clientAction = new clientAction(outputText);
-
-        panel.add(new JLabel("User name:"));
-        panel.add(outputText);
-        buttonPanel.add(buttonServer);
-        buttonPanel.add(buttonClient);
-
-        buttonServer.addActionListener(serverAction);
-        buttonClient.addActionListener(clientAction);
-
-        add(panel);
-        add(buttonPanel, BorderLayout.SOUTH);
-        pack();
 
     }
 
     public void show_MainPanel () {
-        removeAll();
 
         var panel = new JPanel();
         var outputText = new JTextField(100);
@@ -70,6 +51,8 @@ public class MainFrame extends JFrame {
         add(panel, BorderLayout.SOUTH);
         pack();
 
+        loginDialog.setVisible(true);
+
     }
 
     public synchronized void addInputText(String text) {
@@ -78,44 +61,98 @@ public class MainFrame extends JFrame {
 
     }
 
-    private class serverAction implements ActionListener
+    private class ErrorDialog extends JDialog
     {
-        private JTextField outputText;
 
-        public serverAction (JTextField outputText) {
-            this.outputText = outputText;
-        }
+        public ErrorDialog () {
+            super(MainFrame.this, "Error", true);
 
-        @Override
-        public void actionPerformed(ActionEvent actionEvent) {
+            var buttonOk = new JButton("Ok");
 
-            try {
-                sendProtocol = actionProtocol.serverConnect(outputText.getText(), mainFrame);
-            } catch (Exception e) {
-                //e.printStackTrace();
-            }
+            add(new JLabel(ex.getMessage()));
+            add(buttonOk, BorderLayout.SOUTH);
 
         }
+
     }
 
-    private class clientAction implements ActionListener
+    private class LoginDialog extends JDialog
     {
-        private JTextField outputText;
 
-        public clientAction (JTextField outputText) {
-            this.outputText = outputText;
+        public LoginDialog () {
+            super(MainFrame.this, "Login", true);
+
+            var buttonServer = new JButton("Server");
+            var buttonClient = new JButton("Client");
+            var outputText = new JTextField(100);
+            var serverAction = new ServerAction(outputText);
+            var clientAction = new ClientAction(outputText);
+
+            panel.add(new JLabel("User name:"));
+            panel.add(outputText);
+            buttonPanel.add(buttonServer);
+            buttonPanel.add(buttonClient);
+
+            buttonServer.addActionListener(serverAction);
+            buttonClient.addActionListener(clientAction);
+
+
+
+            add(panel);
+            add(buttonPanel, BorderLayout.SOUTH);
+            pack();
         }
 
-        @Override
-        public void actionPerformed(ActionEvent actionEvent) {
+        private class ServerAction implements ActionListener
+        {
+            private JTextField outputText;
 
-            try {
-                sendProtocol = actionProtocol.clientConnect(outputText.getText(), mainFrame);
-            } catch (Exception e) {
-                //e.printStackTrace();
+            public ServerAction (JTextField outputText) {
+                this.outputText = outputText;
             }
 
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+
+                try {
+                    sendProtocol = actionProtocol.serverConnect(outputText.getText(), MainFrame.this);
+                } catch (Exception e) {
+                    //e.printStackTrace();
+                } finally {
+
+                    setVisible(false);
+                    outputText.setText("");
+
+                }
+
+            }
         }
+
+        private class ClientAction implements ActionListener
+        {
+            private JTextField outputText;
+
+            public ClientAction (JTextField outputText) {
+                this.outputText = outputText;
+            }
+
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+
+                try {
+                    sendProtocol = actionProtocol.clientConnect(outputText.getText(), MainFrame.this);
+                } catch (Exception e) {
+                    //e.printStackTrace();
+                } finally {
+
+                    setVisible(false);
+                    outputText.setText("");
+
+                }
+
+            }
+        }
+
     }
 
     private class FileSendAction implements ActionListener
