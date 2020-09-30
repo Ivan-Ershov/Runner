@@ -25,15 +25,15 @@ public class SendProtocol {
 
     private void startProtocol () throws Exception{
 
-        outString.println(recipient_name + " version 1.0");
+        outString.println(recipient_name + " version:1.0");
 
         String[] strings = inString.nextLine().split(" ");
 
-        if(!(strings[1]).equals("version 1.0")){
+        if(!(strings[1]).equals("version:1.0")){
             throw new Exception("Error connect.");
         }
 
-        sender_name = strings[1];
+        sender_name = strings[0];
 
     }
 
