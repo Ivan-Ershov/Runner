@@ -5,10 +5,17 @@ public class ActionProtocol {
     private static final int port = 48700;
     private static final String host = "127.0.0.0";
     private SendProtocol sendProtocol;
+    private static ServerSocket serverSocket;
+    private static Socket incoming;
+    private static Socket connect;
 
     public SendProtocol serverConnect (String name, MainFrame mainFrame) throws Exception {
 
-        try (ServerSocket serverSocket = new ServerSocket(port); Socket incoming = serverSocket.accept()) {
+        try {
+
+            serverSocket = new ServerSocket(port);
+
+            incoming = serverSocket.accept();
 
             sendProtocol = new SendProtocol(incoming.getInputStream(), incoming.getOutputStream(), name);
 
@@ -17,7 +24,8 @@ public class ActionProtocol {
             threadIn.start();
 
         } catch (Exception ex) {
-            //nmhllh;
+            ex.printStackTrace();
+            throw ex;
         }
 
         return sendProtocol;
@@ -26,7 +34,9 @@ public class ActionProtocol {
 
     public SendProtocol clientConnect (String name, MainFrame mainFrame) throws Exception{
 
-        try (Socket connect = new Socket(host, port)) {
+        try {
+
+            connect = new Socket(host, port);
 
             sendProtocol = new SendProtocol(connect.getInputStream(), connect.getOutputStream(), name);
 
@@ -36,6 +46,9 @@ public class ActionProtocol {
 
             threadIn.start();
 
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
         }
 
         return sendProtocol;

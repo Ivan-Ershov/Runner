@@ -96,8 +96,6 @@ public class MainFrame extends JFrame {
             buttonServer.addActionListener(serverAction);
             buttonClient.addActionListener(clientAction);
 
-
-
             add(panel);
             add(buttonPanel, BorderLayout.SOUTH);
             pack();
