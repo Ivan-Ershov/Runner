@@ -3,7 +3,6 @@ import java.net.Socket;
 
 public class ActionProtocol {
     private static final int port = 48700;
-    private static final String host = "127.0.0.0";
     private SendProtocol sendProtocol;
     private static ServerSocket serverSocket;
     private static Socket incoming;
@@ -24,7 +23,7 @@ public class ActionProtocol {
             threadIn.start();
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
             throw ex;
         }
 
@@ -32,7 +31,7 @@ public class ActionProtocol {
 
     }
 
-    public SendProtocol clientConnect (String name, MainFrame mainFrame) throws Exception{
+    public SendProtocol clientConnect (String name, String host, MainFrame mainFrame) throws Exception{
 
         try {
 
@@ -42,12 +41,10 @@ public class ActionProtocol {
 
             var threadIn = new Thread(new ThreadIn(sendProtocol, mainFrame));
 
-            mainFrame.show_MainPanel();
-
             threadIn.start();
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            //ex.printStackTrace();
             throw ex;
         }
 

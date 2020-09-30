@@ -25,11 +25,11 @@ public class SendProtocol {
 
     private void startProtocol () throws Exception{
 
-        outString.println("Server " + recipient_name + " version 1.0 ");
+        outString.println(recipient_name + " version 1.0");
 
         String[] strings = inString.nextLine().split(" ");
 
-        if(!(strings[0] + " " + strings[2] + " " + strings[3]).equals("Client version 1.0")){
+        if(!(strings[1]).equals("version 1.0")){
             throw new Exception("Error connect.");
         }
 
@@ -57,11 +57,11 @@ public class SendProtocol {
 
             outputStream.close();
 
-            return "Система: получен файл " + filename;
+            return "System: get file " + filename;
 
         }
 
-        throw new Exception("Client does not follow the protocol.");
+        throw new Exception("Not follow the protocol.");
     }
 
     public void sendMessage (String massage) {

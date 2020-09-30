@@ -113,7 +113,10 @@ public class MainFrame extends JFrame {
             public void actionPerformed(ActionEvent actionEvent) {
 
                 try {
+
+                    setVisible(false);
                     sendProtocol = actionProtocol.serverConnect(outputText.getText(), MainFrame.this);
+
                 } catch (Exception e) {
                     //e.printStackTrace();
                 } finally {
@@ -129,6 +132,8 @@ public class MainFrame extends JFrame {
         private class ClientAction implements ActionListener
         {
             private JTextField outputText;
+            private String host;
+            private GetIpDialog getIpDialog = new GetIpDialog();
 
             public ClientAction (JTextField outputText) {
                 this.outputText = outputText;
@@ -138,7 +143,11 @@ public class MainFrame extends JFrame {
             public void actionPerformed(ActionEvent actionEvent) {
 
                 try {
-                    sendProtocol = actionProtocol.clientConnect(outputText.getText(), MainFrame.this);
+
+                    getIpDialog.setVisible(true);
+
+                    sendProtocol = actionProtocol.clientConnect(outputText.getText(), host, MainFrame.this);
+
                 } catch (Exception e) {
                     //e.printStackTrace();
                 } finally {
@@ -149,6 +158,43 @@ public class MainFrame extends JFrame {
                 }
 
             }
+
+            private class GetIpDialog extends JDialog
+            {
+
+                private JTextField outputText = new JTextField(100);
+
+                public GetIpDialog () {
+                    super(MainFrame.this, "Get ip", true);
+
+                    var buttonEnter = new JButton("Enter");
+                    var panel = new JPanel();
+                    var enterAction = new EnterAction();
+
+                    panel.add(new JLabel("Ip"));
+                    panel.add(outputText);
+                    buttonEnter.addActionListener(enterAction);
+
+                    add(panel);
+                    add(buttonEnter, BorderLayout.SOUTH);
+
+                    pack();
+                }
+
+                private class EnterAction implements ActionListener
+                {
+
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+
+                        host = outputText.getText();
+                        setVisible(false);
+
+                    }
+                }
+
+            }
+
         }
 
     }
